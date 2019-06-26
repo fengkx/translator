@@ -1,6 +1,9 @@
 package translator
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/ttacon/chalk"
+)
 
 type Respone struct {
 	req          Request
@@ -18,9 +21,17 @@ type Defintion struct {
 	sentence string
 }
 
+var (
+	ResStyle   = chalk.White.NewStyle().WithTextStyle(chalk.Bold).Style
+	LabelStyle = chalk.White.NewStyle().WithBackground(chalk.Green).WithTextStyle(chalk.Bold).Style
+	POSStyle   = chalk.White.NewStyle().WithTextStyle(chalk.Bold).WithTextStyle(chalk.Italic).Style
+	EgStyle    = chalk.White.NewStyle().WithTextStyle(chalk.Italic).WithForeground(chalk.Yellow).Style
+	Blod       = chalk.White.NewStyle().WithTextStyle(chalk.Bold).Style
+)
+
 func (d Defintion) String() string {
 	if d.sentence != "" {
-		return fmt.Sprintf("%s\n\teg:%s\n", d.meaning, d.sentence)
+		return fmt.Sprintf("%s\n\teg:%s\n", d.meaning, EgStyle(d.sentence))
 	} else {
 		return fmt.Sprintf("%s\n", d.meaning)
 	}
@@ -48,19 +59,22 @@ func (res *Respone) Err() error {
 }
 
 func (res *Respone) Print() {
-	fmt.Println(res.res)
+	fmt.Println(ResStyle(res.res))
 	if res.translations != nil {
 		fmt.Println("--------------------------")
-		fmt.Println("Translations")
+
+		fmt.Println(
+			LabelStyle("Translations"))
 		for _, v := range res.translations {
 			fmt.Printf("\t%s\n", v)
 		}
 	}
 	if res.definitions != nil {
 		fmt.Println("--------------------------")
-		fmt.Println("Definitions")
+		fmt.Println(
+			LabelStyle("Definitions"))
 		for k, v := range res.definitions {
-			fmt.Printf("[%s]\n", k)
+			fmt.Printf("[%s]\n", POSStyle(k+"."))
 			for _, line := range v {
 				fmt.Printf("%s", line)
 			}
@@ -69,10 +83,10 @@ func (res *Respone) Print() {
 	}
 	if res.alternatives != nil {
 		fmt.Println("--------------------------")
-		fmt.Println("Alternatives")
+		fmt.Println(LabelStyle("Alternatives"))
 
 		for k, v := range res.alternatives {
-			fmt.Println(k)
+			fmt.Println(Blod(k))
 			for _, line := range v {
 				fmt.Printf("\t%s\n", line)
 			}
