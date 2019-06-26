@@ -18,11 +18,12 @@ func main() {
 	flag.StringVar(&sl, "s", "auto", "source language")
 	flag.StringVar(&tl, "t", "", "target language")
 	flag.Parse()
-	if len(os.Args[1:]) <=0 {
+	args := flag.Args()
+	if len(args) <=0 {
 		flag.Usage()
 		return
 	}
-	payload = strings.Join(os.Args[1:], " ")
+	payload = strings.Join(args, " ")
 	if tl == "" {
 		re := regexp.MustCompile("[\u4e00-\u9fa5]")
 		if re.Match([]byte(payload)) {
