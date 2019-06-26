@@ -19,14 +19,18 @@ type Defintion struct {
 }
 
 func (d Defintion) String() string {
-	return fmt.Sprintf("%s\n\teg:%s\n", d.meaning, d.sentence)
+	if d.sentence != "" {
+		return fmt.Sprintf("%s\n\teg:%s\n", d.meaning, d.sentence)
+	} else {
+		return fmt.Sprintf("%s\n", d.meaning)
+	}
 }
 
 type Defintions []Defintion
 
 func NewDefintion(args ...string) Defintion {
 	l := len(args)
-	if l >= 1 {
+	if l > 1 {
 		return Defintion{
 			args[0],
 			args[1],

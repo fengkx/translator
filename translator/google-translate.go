@@ -11,7 +11,7 @@ type GoogleTranslator struct {
 	apihost string
 }
 
-func NewGoogleTransaltor(args ...string) GoogleTranslator {
+func NewGoogleTransaltor(args ...string) Translator {
 	l := len(args)
 	var host string
 	if l < 1 {
@@ -22,7 +22,7 @@ func NewGoogleTransaltor(args ...string) GoogleTranslator {
 	if host[len(host)-1] != '/' {
 		host = host + "/"
 	}
-	return GoogleTranslator{
+	return &GoogleTranslator{
 		name:    "google",
 		apihost: host,
 	}
