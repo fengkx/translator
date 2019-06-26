@@ -11,19 +11,19 @@ import (
 
 func main() {
 	// register translator
-	type translatorConstructor func(args...string)translator.Translator
+	type translatorConstructor func(args ...string) translator.Translator
 
 	var constructors = map[string]translatorConstructor{
 		"google": translator.NewGoogleTransaltor,
-		"ciba": translator.NewCibaTranslator,
+		"ciba":   translator.NewCibaTranslator,
+		"youdao": translator.NewYoudaoTranslator,
 	}
-
 
 	var (
 		sl      string
 		tl      string
 		payload string
-		engine string
+		engine  string
 	)
 
 	flag.StringVar(&sl, "s", "auto", "source language")
@@ -45,14 +45,12 @@ func main() {
 		}
 	}
 
-
-
 	c, ok := constructors[engine]
 	if !ok {
 		flag.Usage()
 		return
 	}
-	t:=c()
+	t := c()
 	result := t.Translate(translator.NewReq(
 		payload,
 		sl,
