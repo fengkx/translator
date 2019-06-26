@@ -7,13 +7,13 @@ import (
 )
 
 type CibaTranslator struct {
-	name string
+	name    string
 	apihost string
 }
 
 func NewCibaTranslator(args ...string) Translator {
 	var host = "http://fy.iciba.com/ajax.php"
-	if len(args) >0 {
+	if len(args) > 0 {
 		host = args[0]
 	}
 	return &CibaTranslator{
@@ -23,9 +23,9 @@ func NewCibaTranslator(args ...string) Translator {
 
 }
 
-func (t *CibaTranslator)Translate(r Request) (res Respone) {
+func (t *CibaTranslator) Translate(r Request) (res Respone) {
 	var (
-		err error
+		err         error
 		definitions map[string]Defintions
 	)
 	// http://fy.iciba.com/ajax.php?a=fy&f=zh-CN&t=en&w=%E4%BD%A0%E5%A5%BD
@@ -43,7 +43,7 @@ func (t *CibaTranslator)Translate(r Request) (res Respone) {
 	result, err := jq.QueryToString("content.out")
 
 	// definiations
-	wordMeans,err := jq.QueryToArray("content.word_mean")
+	wordMeans, err := jq.QueryToArray("content.word_mean")
 
 	if err == nil && wordMeans != nil {
 		definitions = make(map[string]Defintions)
@@ -62,18 +62,18 @@ func (t *CibaTranslator)Translate(r Request) (res Respone) {
 	}
 
 	return Respone{
-		rawResult:rawResult,
-		src:r.payload,
-		res:result,
-		definitions:definitions,
-		alternatives:nil, // api without any  alternative and translations
-		translations:nil,
-		req:r,
-		err: err,
+		rawResult:    rawResult,
+		src:          r.payload,
+		res:          result,
+		definitions:  definitions,
+		alternatives: nil, // api without any  alternative and translations
+		translations: nil,
+		req:          r,
+		err:          err,
 	}
 
 }
 
-func (t *CibaTranslator)Name() string {
+func (t *CibaTranslator) Name() string {
 	return t.name
 }
