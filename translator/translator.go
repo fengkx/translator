@@ -4,7 +4,7 @@ const (
 	DefaultUA = "Mozilla/5.0 translator"
 )
 
-type Translator interface  {
+type Translator interface {
 	Name() string
 	Translate(r Request) (res Respone)
 }

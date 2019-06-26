@@ -11,15 +11,15 @@ import (
 
 func main() {
 	var (
-		sl string
-		tl string
+		sl      string
+		tl      string
 		payload string
 	)
 	flag.StringVar(&sl, "s", "auto", "source language")
 	flag.StringVar(&tl, "t", "", "target language")
 	flag.Parse()
 	args := flag.Args()
-	if len(args) <=0 {
+	if len(args) <= 0 {
 		flag.Usage()
 		return
 	}

@@ -1,8 +1,8 @@
 package translator
 
 type Request struct {
-	sl string
-	tl string
+	sl      string
+	tl      string
 	payload string
 }
 

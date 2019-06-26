@@ -7,14 +7,14 @@ import (
 )
 
 type GoogleTranslator struct {
-	name string
+	name    string
 	apihost string
 }
 
 func NewGoogleTransaltor(args ...string) GoogleTranslator {
 	l := len(args)
 	var host string
-	if l<1 {
+	if l < 1 {
 		host = "https://translate.googleapis.com/"
 	} else {
 		host = args[0]
@@ -23,7 +23,7 @@ func NewGoogleTransaltor(args ...string) GoogleTranslator {
 		host = host + "/"
 	}
 	return GoogleTranslator{
-		name: "google",
+		name:    "google",
 		apihost: host,
 	}
 }
@@ -49,25 +49,25 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 	url = url + "?" + dt
 	param := req.Param{
 		"client": "gtx",
-		"sl": r.sl,
-		"tl": r.tl,
-		"q": r.payload,
+		"sl":     r.sl,
+		"tl":     r.tl,
+		"q":      r.payload,
 	}
 
 	header := req.Header{
-		"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0",
+		"User-Agent":      "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:59.0) Gecko/20100101 Firefox/59.0",
 		"Accept-Encoding": "gzip, deflate",
-		"Accept": "*/*",
-		"Connection": "keep-alive",
+		"Accept":          "*/*",
+		"Connection":      "keep-alive",
 	}
 
 	resp, err := req.Get(url, param, header)
 	if err != nil {
-		return Respone{err:err, req:r}
+		return Respone{err: err, req: r}
 	}
 	rawResult, err := resp.ToString()
 	if err != nil {
-		return Respone{err:err, req:r}
+		return Respone{err: err, req: r}
 	}
 	type respJSON [][][]interface{}
 	var s respJSON
@@ -77,23 +77,30 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 	result, err := jq.QueryToString("[0].[0].[0]")
 	source, err := jq.QueryToString("[0].[0].[1]")
 	if err != nil {
-		return Respone{err:err, req:r}
+		return Respone{err: err, req: r}
 	}
 
 	var translations []string
 	var alternatives map[string][]string
-	var definitions map[string][]string
+	var definitions map[string]Defintions
 
-	if trs, err := jq.QueryToArray("[1].[0].[1]"); err == nil && trs != nil {
-		translations = make([]string, len(trs))
-		for i, each := range trs {
-			translations[i]=each.(string)
+	if trs, err := jq.QueryToArray("[1].[0].[2]"); err == nil && trs != nil {
+		translations = make([]string, 0, len(trs))
+		for _, each := range trs {
+			eachSlice := each.([]interface{})
+			rawWords := eachSlice[1].([]interface{})
+			words := make([]string, len(rawWords))
+			for i, word := range rawWords {
+				words[i] = word.(string)
+			}
+
+			translations = append(translations, eachSlice[0].(string)+": "+strings.Join(words, " "))
 		}
 	}
 
-	if als, err := jq.QueryToArray("[1].[0].[2]");err == nil && als != nil {
+	if als, err := jq.QueryToArray("[1].[0].[2]"); err == nil && als != nil {
 		for _, tr := range als {
-			if tr, ok := tr.([]interface{}); ok && len(tr) >=2 {
+			if tr, ok := tr.([]interface{}); ok && len(tr) >= 2 {
 				alternatives = make(map[string][]string)
 				k := tr[0].(string)
 				vs := tr[1].([]interface{})
@@ -107,29 +114,35 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 		}
 	}
 
-	if defsArr, err := jq.QueryToArray("[12].[0]"); err ==nil && defsArr!=nil {
-		strs, err := jq.QueryToArray("[12].[0].[1].[0]")
-		if err == nil {
-			definitions = make(map[string][]string)
-			k := defsArr[0].(string)
-			strSlice := make([]string, 2)
-			strSlice[0] = strs[0].(string)
-			strSlice[1] = strs[2].(string) //ignore strs[1]
-			definitions[k]=strSlice
+	if pos, err := jq.QueryToArray("[12]"); err == nil && pos != nil {
+		definitions = make(map[string]Defintions)
+		for _, p := range pos {
+			if defsArr, ok := p.([]interface{}); ok && defsArr != nil {
+				strs := defsArr[1].([]interface{})
+				defItems := make(Defintions, len(strs))
+				k := defsArr[0].(string)
+				for i, d := range strs {
+					if df, ok := d.([]interface{}); ok {
+						meaning := df[0].(string)
+						sentence := df[2].(string)
+						defItems[i] = NewDefintion(meaning, sentence)
+
+					}
+					definitions[k] = defItems
+				}
+
+			}
 		}
-
-
-
 	}
 	return Respone{
-		req:r,
-		alternatives:alternatives,
-		translations:translations,
-		definitions:definitions,
-		rawResult:rawResult,
-		res: result,
-		src: source,
-		err: nil,
+		req:          r,
+		alternatives: alternatives,
+		translations: translations,
+		definitions:  definitions,
+		rawResult:    rawResult,
+		res:          result,
+		src:          source,
+		err:          nil,
 	}
 }
 
