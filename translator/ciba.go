@@ -39,13 +39,17 @@ func (t *CibaTranslator) Translate(r Request) (res Respone) {
 	rawResult, err := resp.ToString()
 	jq, err := gojq.NewStringQuery(rawResult)
 
+	if err != nil {
+		return Respone{err: err, req: r}
+	}
+
 	// result
-	result, err := jq.QueryToString("content.out")
+	result, parseErr := jq.QueryToString("content.out")
 
 	// definiations
-	wordMeans, err := jq.QueryToArray("content.word_mean")
+	wordMeans, parseErr := jq.QueryToArray("content.word_mean")
 
-	if err == nil && wordMeans != nil {
+	if parseErr == nil && wordMeans != nil {
 		definitions = make(map[string]Defintions)
 		posRe := regexp.MustCompile(`(?m)[.]+\s+`)
 
@@ -55,10 +59,6 @@ func (t *CibaTranslator) Translate(r Request) (res Respone) {
 			definitions[pair[0]] = Defintions{NewDefintion(pair[1])}
 
 		}
-	}
-
-	if err != nil {
-		return Respone{err: err, req: r}
 	}
 
 	return Respone{

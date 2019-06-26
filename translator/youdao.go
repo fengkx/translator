@@ -71,18 +71,23 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 		"Referer":    "http://fanyi.youdao.com/",
 		"User-Agent": "Mozilla/5.0 (Windows NT 6.2; rv:51.0) Gecko/20100101 Firefox/51.0",
 	}
+
 	resp, err := req.Post(t.apihost, parm, header)
 	rawResult, err := resp.ToString()
+
 	jq, err := gojq.NewStringQuery(rawResult)
+	if err != nil {
+		return Respone{err: err, req: r}
+	}
 
 	// result
-	result, err := jq.QueryToString("translateResult.[0].[0].tgt")
-	source, err := jq.QueryToString("translateResult.[0].[0].src")
+	result, parseErr := jq.QueryToString("translateResult.[0].[0].tgt")
+	source, parseErr := jq.QueryToString("translateResult.[0].[0].src")
 
 	// definiations
-	wordMeans, err := jq.QueryToArray("smartResult.entries")
+	wordMeans, parseErr := jq.QueryToArray("smartResult.entries")
 
-	if err == nil && wordMeans != nil {
+	if parseErr == nil && wordMeans != nil {
 		definitions = make(map[string]Defintions)
 		posRe := regexp.MustCompile(`(?m)[.]+\s+`)
 
@@ -95,10 +100,6 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 			definitions[pair[0]] = Defintions{NewDefintion(strings.TrimSpace(pair[1]))}
 
 		}
-	}
-
-	if err != nil {
-		return Respone{err: err, req: r}
 	}
 
 	return Respone{

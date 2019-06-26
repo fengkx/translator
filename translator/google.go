@@ -74,8 +74,8 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 	_ = resp.ToJSON(&s)
 
 	jq, err := gojq.NewStringQuery(rawResult)
-	result, err := jq.QueryToString("[0].[0].[0]")
-	source, err := jq.QueryToString("[0].[0].[1]")
+	result, _ := jq.QueryToString("[0].[0].[0]")
+	source, _ := jq.QueryToString("[0].[0].[1]")
 	if err != nil {
 		return Respone{err: err, req: r}
 	}
@@ -84,7 +84,7 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 	var alternatives map[string][]string
 	var definitions map[string]Defintions
 
-	if trs, err := jq.QueryToArray("[1].[0].[2]"); err == nil && trs != nil {
+	if trs, parseErr := jq.QueryToArray("[1].[0].[2]"); parseErr == nil && trs != nil {
 		translations = make([]string, 0, len(trs))
 		for _, each := range trs {
 			eachSlice := each.([]interface{})
@@ -98,7 +98,7 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 		}
 	}
 
-	if als, err := jq.QueryToArray("[1].[0].[2]"); err == nil && als != nil {
+	if als, parseErr := jq.QueryToArray("[1].[0].[2]"); parseErr == nil && als != nil {
 		for _, tr := range als {
 			if tr, ok := tr.([]interface{}); ok && len(tr) >= 2 {
 				alternatives = make(map[string][]string)
@@ -114,7 +114,7 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 		}
 	}
 
-	if pos, err := jq.QueryToArray("[12]"); err == nil && pos != nil {
+	if pos, parseErr := jq.QueryToArray("[12]"); parseErr == nil && pos != nil {
 		definitions = make(map[string]Defintions)
 		for _, p := range pos {
 			if defsArr, ok := p.([]interface{}); ok && defsArr != nil {
