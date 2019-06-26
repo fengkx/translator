@@ -30,6 +30,17 @@ func main() {
 	flag.StringVar(&engine, "e", "google", "engine")
 	flag.StringVar(&tl, "t", "", "target language")
 	flag.Parse()
+
+	flag.Usage = func() {
+		fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
+		flag.PrintDefaults()
+		engines := make([]string, 0, len(constructors))
+		for k := range constructors {
+			engines = append(engines, k)
+		}
+		fmt.Fprintf(flag.CommandLine.Output(), "Supported engines: %s\n", strings.Join(engines, ", "))
+
+	}
 	args := flag.Args()
 	if len(args) <= 0 {
 		flag.Usage()
