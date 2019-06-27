@@ -14,7 +14,7 @@ func main() {
 	type translatorConstructor func(args ...string) translator.Translator
 
 	var constructors = map[string]translatorConstructor{
-		"google": translator.NewGoogleTransaltor,
+		"google": translator.NewGoogleTranslator,
 		"ciba":   translator.NewCibaTranslator,
 		"youdao": translator.NewYoudaoTranslator,
 	}
