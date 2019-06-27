@@ -11,7 +11,7 @@ type GoogleTranslator struct {
 	apihost string
 }
 
-func NewGoogleTransaltor(args ...string) Translator {
+func NewGoogleTranslator(args ...string) Translator {
 	l := len(args)
 	var host string
 	if l < 1 {
