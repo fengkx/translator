@@ -2,22 +2,12 @@ language: go
 go:
   - "1.12"
 
-addons:
-  apt:
-    packages:
-      # needed for the nfpm pipe:
-      - rpm
-      # needed for the snap pipe:
-      - snapd
-
 env:
   # needed for the snap pipe:
   - PATH=/snap/bin:$PATH
 
-install:
-  # needed for the snap pipe:
-  - sudo snap install snapcraft --classic
-
+before_install:
+  - go get -u golang.org/x/lint/golint
 script:
   - make lint
   - make test
