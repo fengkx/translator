@@ -33,7 +33,7 @@ var (
 
 func (d Defintion) String() string {
 	if d.sentence != "" {
-		return fmt.Sprintf("%s\n\teg:%s\n", d.meaning, EgStyle(d.sentence))
+		return fmt.Sprintf("%s\n\teg: %s\n", d.meaning, EgStyle(d.sentence))
 	} else {
 		return fmt.Sprintf("%s\n", d.meaning)
 	}
