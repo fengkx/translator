@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"github.com/elgs/gojq"
+	"github.com/fengkx/translator/config"
 	"github.com/imroc/req"
 	"io"
 	"math/rand"
@@ -18,7 +19,7 @@ type YoudaoTranslator struct {
 }
 
 func NewYoudaoTranslator(args ...string) Translator {
-	var host = "http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule"
+	var host = config.DefaultYoudaoAPI
 	if len(args) > 0 {
 		host = args[0]
 	}

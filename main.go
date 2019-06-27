@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/fengkx/translator/config"
 	"github.com/fengkx/translator/translator"
 	"os"
 	"regexp"
@@ -30,6 +31,8 @@ func main() {
 	flag.StringVar(&engine, "e", "google", "engine")
 	flag.StringVar(&tl, "t", "", "target language")
 	flag.Parse()
+
+	cfg := config.Cfg
 
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
@@ -61,7 +64,7 @@ func main() {
 		flag.Usage()
 		return
 	}
-	t := c()
+	t := c(cfg.Section(engine).Key("HOST").Value())
 	result := t.Translate(translator.NewReq(
 		payload,
 		sl,

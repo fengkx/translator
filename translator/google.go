@@ -4,6 +4,8 @@ import (
 	"github.com/elgs/gojq"
 	"github.com/imroc/req"
 	"strings"
+
+	"github.com/fengkx/translator/config"
 )
 
 type GoogleTranslator struct {
@@ -15,7 +17,7 @@ func NewGoogleTranslator(args ...string) Translator {
 	l := len(args)
 	var host string
 	if l < 1 {
-		host = "https://translate.googleapis.com/"
+		host = config.DefaultGoogleAPI
 	} else {
 		host = args[0]
 	}

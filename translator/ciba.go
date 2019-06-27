@@ -2,6 +2,7 @@ package translator
 
 import (
 	"github.com/elgs/gojq"
+	"github.com/fengkx/translator/config"
 	"github.com/imroc/req"
 	"regexp"
 )
@@ -12,7 +13,7 @@ type CibaTranslator struct {
 }
 
 func NewCibaTranslator(args ...string) Translator {
-	var host = "http://fy.iciba.com/ajax.php"
+	var host = config.DefaultCibaAPI
 	if len(args) > 0 {
 		host = args[0]
 	}

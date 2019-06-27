@@ -2,6 +2,7 @@ package translator
 
 import (
 	"fmt"
+	"github.com/fengkx/translator/config"
 	"github.com/ttacon/chalk"
 )
 
@@ -22,11 +23,12 @@ type Defintion struct {
 }
 
 var (
-	ResStyle   = chalk.White.NewStyle().WithTextStyle(chalk.Bold).Style
-	LabelStyle = chalk.White.NewStyle().WithBackground(chalk.Green).WithTextStyle(chalk.Bold).Style
-	POSStyle   = chalk.White.NewStyle().WithTextStyle(chalk.Bold).WithTextStyle(chalk.Italic).Style
-	EgStyle    = chalk.White.NewStyle().WithTextStyle(chalk.Italic).WithForeground(chalk.Yellow).Style
-	Blod       = chalk.White.NewStyle().WithTextStyle(chalk.Bold).Style
+	textColor = config.Cfg.TextColor()
+	ResStyle   = textColor.NewStyle().WithTextStyle(chalk.Bold).Style
+	LabelStyle = textColor.NewStyle().WithBackground(config.Cfg.LabelColor()).WithTextStyle(chalk.Bold).Style
+	POSStyle   = textColor.NewStyle().WithTextStyle(chalk.Bold).WithTextStyle(chalk.Italic).Style
+	EgStyle    = textColor.NewStyle().WithTextStyle(chalk.Italic).WithForeground(config.Cfg.EgColor()).Style
+	Blod       = textColor.NewStyle().WithTextStyle(chalk.Bold).Style
 )
 
 func (d Defintion) String() string {
