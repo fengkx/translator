@@ -42,6 +42,7 @@ func main() {
 			engines = append(engines, k)
 		}
 		fmt.Fprintf(flag.CommandLine.Output(), "Supported engines: %s\n", strings.Join(engines, ", "))
+		fmt.Fprintf(flag.CommandLine.Output(), "Config ini path: %s\n", config.ConfigPath())
 
 	}
 	args := flag.Args()
