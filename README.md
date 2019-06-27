@@ -1,6 +1,6 @@
 # translator
 [![Build Status](https://travis-ci.org/fengkx/translator.svg?branch=master)](https://travis-ci.org/fengkx/translator)       
-命令行翻译工具  
+多引擎命令行翻译工具   [PreBuild下载](https://github.com/fengkx/translator/releases)  
 ```
 Usage of tl:
   -e string
@@ -9,17 +9,41 @@ Usage of tl:
     	source language (default "auto")
   -t string
     	target language
-Supported engines: youdao, google, ciba
+Supported engines: google, ciba, youdao
+Config ini path: /home/fengkx/.config
 
 ```
 | engine名 | 中文       | 备注     |
 | ------- | -------- | ------ |
 | google  | Google翻译 | ajax接口 |
-| ciba    | 金山词霸     | ajax   |
+| ciba    | 金山词霸     | ajax接口   |
 | youdao  | 有道翻译     | ajax接口 |
 
 通过[环境变量](https://golang.org/pkg/net/http/#ProxyFromEnvironment)`http_proxy` or `https_proxy`来代理请求
 
+通过 ini 配置文件设置输出终端颜色，API host等参数。ini路径在Usage中有显示 文件名为`go-translator.ini`
+
+默认ini内容
+```ini
+# Translator configuration
+[google]
+HOST=https://translate.googleapis.com/
+
+[ciba]
+HOST=http://fy.iciba.com/ajax.php
+
+[youdao]
+HOST=http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule
+
+[output]
+# only support black red green yellow blue magenta cyan white
+LabelColor=green
+TextColor=white
+EgColor=yellow
+
+```
+
 感谢 [翻译接口总结](https://juejin.im/post/5beaac9cf265da614a3a09a9)
 
-![](https://i.imgur.com/JE0qi6h.png)
+![windows](https://i.imgur.com/urEOQbE.png)
+![linux](https://i.imgur.com/PHQ6O4F.png)
