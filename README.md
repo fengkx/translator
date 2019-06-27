@@ -1,6 +1,6 @@
 # translator
-
-命令行翻译工具
+[![Build Status](https://travis-ci.org/fengkx/translator.svg?branch=master)](https://travis-ci.org/fengkx/translator)       
+命令行翻译工具  
 ```
 Usage of tl:
   -e string
