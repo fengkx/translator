@@ -8,7 +8,7 @@ build:
 	@ go build -mod=vendor -o $(APP_NAME) main.go
 
 test:
-	go test $(ROOT_DIR)/translator
+	go test -cover $(ROOT_DIR)/...
 
 lint:
 	golint $(ROOT_DIR)
@@ -38,7 +38,7 @@ openbsd-amd64:
 	@ GOOS=openbsd GOARCH=amd64 go build -o $(APP_NAME)-openbsd-amd64 main.go
 
 windows-amd64:
-	@ GOOS=windows GOARCH=amd64 go build -o $(APP_NAME)-windows-amd64 main.go
+	@ GOOS=windows GOARCH=amd64 go build -o $(APP_NAME)-windows-amd64.exe main.go
 
 build-all: linux-amd64 linux-armv8 linux-armv7 linux-armv6 linux-armv5 darwin-amd64 freebsd-amd64 openbsd-amd64 windows-amd64
 
