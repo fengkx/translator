@@ -124,8 +124,12 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 				for i, d := range strs {
 					if df, ok := d.([]interface{}); ok {
 						meaning := df[0].(string)
-						sentence := df[2].(string)
-						defItems[i] = NewDefintion(meaning, sentence)
+						if len(df) >2 {
+							sentence := df[2].(string)
+							defItems[i] = NewDefintion(meaning, sentence)
+						} else {
+							defItems[i] = NewDefintion(meaning)
+						}
 
 					}
 					definitions[k] = defItems
