@@ -98,7 +98,12 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 				continue
 			}
 			pair := posRe.Split(wordmean, 2)
-			definitions[pair[0]] = Defintions{NewDefintion(strings.TrimSpace(pair[1]))}
+			if len(pair) > 1 {
+				definitions[pair[0]] = Defintions{NewDefintion(strings.TrimSpace(pair[1]))}
+			}
+			if len(pair) == 1 {
+				definitions[strings.TrimSpace(wordmean)] = Defintions{NewDefintion(strings.TrimSpace(pair[0]))}
+			}
 
 		}
 	}
