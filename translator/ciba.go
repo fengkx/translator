@@ -12,6 +12,10 @@ type CibaTranslator struct {
 	apihost string
 }
 
+type cibaResp struct {
+	DefaultResp
+}
+
 func NewCibaTranslator(args ...string) Translator {
 	var host = config.DefaultCibaAPI
 	if len(args) > 0 {
@@ -37,11 +41,14 @@ func (t *CibaTranslator) Translate(r Request) (res Respone) {
 		"w": r.payload,
 	}
 	resp, err := req.Get(t.apihost, parm)
+	if err != nil {
+		return &cibaResp{DefaultResp{err: err, req: r}}
+	}
 	rawResult, err := resp.ToString()
 	jq, err := gojq.NewStringQuery(rawResult)
 
 	if err != nil {
-		return Respone{err: err, req: r}
+		return &cibaResp{DefaultResp{err: err, req: r}}
 	}
 
 	// result
@@ -62,7 +69,7 @@ func (t *CibaTranslator) Translate(r Request) (res Respone) {
 		}
 	}
 
-	return Respone{
+	return &cibaResp{DefaultResp{
 		rawResult:    rawResult,
 		src:          r.payload,
 		res:          result,
@@ -71,7 +78,7 @@ func (t *CibaTranslator) Translate(r Request) (res Respone) {
 		translations: nil,
 		req:          r,
 		err:          err,
-	}
+	}}
 
 }
 

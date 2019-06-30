@@ -9,13 +9,13 @@ func TestDefintion_String(t *testing.T) {
 	egRe := regexp.MustCompile(`eg.`)
 
 	nosent := NewDefintion("meaning")
-	nosentStr := nosent.String()
-	if egRe.Match([]byte(nosentStr)){
+	nosentStr := nosent.StyleString()
+	if egRe.Match([]byte(nosentStr)) {
 		t.Fatalf("Definition without sentence should not contain eg. but got %s", nosentStr)
 	}
 
 	withsent := NewDefintion("meaning", "sentence")
-	withsentStr := withsent.String()
+	withsentStr := withsent.StyleString()
 	if !egRe.Match([]byte(withsentStr)) {
 		t.Fatalf("Definition without sentence should not contain eg. but got %s", withsentStr)
 	}

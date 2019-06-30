@@ -13,6 +13,10 @@ type GoogleTranslator struct {
 	apihost string
 }
 
+type googleResp struct {
+	DefaultResp
+}
+
 func NewGoogleTranslator(args ...string) Translator {
 	l := len(args)
 	var host string
@@ -65,22 +69,22 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 
 	resp, err := req.Get(url, param, header)
 	if err != nil {
-		return Respone{err: err, req: r}
+		return &googleResp{DefaultResp{err: err, req: r}}
 	}
 	rawResult, err := resp.ToString()
 	if err != nil {
-		return Respone{err: err, req: r}
+		return &DefaultResp{err: err, req: r}
 	}
 	type respJSON [][][]interface{}
 	var s respJSON
 	_ = resp.ToJSON(&s)
 
 	jq, err := gojq.NewStringQuery(rawResult)
+	if err != nil {
+		return &googleResp{DefaultResp{err: err, req: r}}
+	}
 	result, _ := jq.QueryToString("[0].[0].[0]")
 	source, _ := jq.QueryToString("[0].[0].[1]")
-	if err != nil {
-		return Respone{err: err, req: r}
-	}
 
 	var translations []string
 	var alternatives map[string][]string
@@ -126,7 +130,7 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 				for i, d := range strs {
 					if df, ok := d.([]interface{}); ok {
 						meaning := df[0].(string)
-						if len(df) >2 {
+						if len(df) > 2 {
 							sentence := df[2].(string)
 							defItems[i] = NewDefintion(meaning, sentence)
 						} else {
@@ -140,7 +144,7 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 			}
 		}
 	}
-	return Respone{
+	return &googleResp{DefaultResp{
 		req:          r,
 		alternatives: alternatives,
 		translations: translations,
@@ -149,7 +153,7 @@ func (t *GoogleTranslator) Translate(r Request) (res Respone) {
 		res:          result,
 		src:          source,
 		err:          nil,
-	}
+	}}
 }
 
 func (t *GoogleTranslator) Name() string {

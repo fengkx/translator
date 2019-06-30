@@ -3,19 +3,24 @@ package translator
 import (
 	"crypto/md5"
 	"fmt"
-	"github.com/elgs/gojq"
-	"github.com/fengkx/translator/config"
-	"github.com/imroc/req"
 	"io"
 	"math/rand"
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/elgs/gojq"
+	"github.com/fengkx/translator/config"
+	"github.com/imroc/req"
 )
 
 type YoudaoTranslator struct {
 	name    string
 	apihost string
+}
+
+type youdaoResp struct {
+	DefaultResp
 }
 
 func NewYoudaoTranslator(args ...string) Translator {
@@ -49,7 +54,7 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 	salt := fmt.Sprintf("%d", ms)
 
 	h := md5.New()
-	io.WriteString(h, strStart+r.payload+salt+strEnd)
+	_, _ = io.WriteString(h, strStart+r.payload+salt+strEnd)
 	sign := fmt.Sprintf("%x", h.Sum(nil))
 
 	parm := req.Param{
@@ -74,11 +79,15 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 	}
 
 	resp, err := req.Post(t.apihost, parm, header)
+	if err != nil {
+		return &youdaoResp{DefaultResp{err: err, req: r}}
+	}
+
 	rawResult, err := resp.ToString()
 
 	jq, err := gojq.NewStringQuery(rawResult)
 	if err != nil {
-		return Respone{err: err, req: r}
+		return &youdaoResp{DefaultResp{err: err, req: r}}
 	}
 
 	// result
@@ -92,7 +101,7 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 		definitions = make(map[string]Defintions)
 		posRe := regexp.MustCompile(`(?m)[.]+\s+`)
 
-		for _, wm := range wordMeans {
+		for i, wm := range wordMeans {
 			wordmean := wm.(string)
 			if wordmean == "" {
 				continue
@@ -102,13 +111,12 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 				definitions[pair[0]] = Defintions{NewDefintion(strings.TrimSpace(pair[1]))}
 			}
 			if len(pair) == 1 {
-				definitions[strings.TrimSpace(wordmean)] = Defintions{NewDefintion(strings.TrimSpace(pair[0]))}
+				definitions[fmt.Sprintf("!HIDE!%x", &i)] = Defintions{NewDefintion(strings.TrimSpace(pair[0]))}
 			}
-
 		}
 	}
 
-	return Respone{
+	return &youdaoResp{DefaultResp{
 		rawResult:    rawResult,
 		src:          source,
 		res:          result,
@@ -117,10 +125,75 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 		translations: nil,
 		req:          r,
 		err:          err,
-	}
+	}}
 
 }
 
 func (t *YoudaoTranslator) Name() string {
 	return t.name
+}
+
+func (res youdaoResp) print(style bool) {
+	if style {
+		fmt.Println(ResStyle(res.res))
+	} else {
+		fmt.Println(res.res)
+	}
+
+	if res.translations != nil {
+		fmt.Println("--------------------------")
+
+		if style {
+			fmt.Println(
+				LabelStyle("Translations"))
+		} else {
+			fmt.Println("Translations")
+		}
+		for _, v := range res.translations {
+			fmt.Printf("\t%s\n", v)
+		}
+	}
+	if res.definitions != nil {
+		fmt.Println("--------------------------")
+		fmt.Println(
+			LabelStyle("Definitions"))
+		for k, v := range res.definitions {
+			if !strings.HasPrefix(k, "!HIDE!") {
+				if style {
+					fmt.Printf("[%s]\n", POSStyle(k+"."))
+				} else {
+					fmt.Printf("[%s]\n", k+".")
+				}
+			}
+
+			for _, line := range v {
+				fmt.Printf("%s", line.string(style))
+			}
+			fmt.Println()
+		}
+	}
+	if res.alternatives != nil {
+		fmt.Println("--------------------------")
+		fmt.Println(LabelStyle("Alternatives"))
+
+		for k, v := range res.alternatives {
+			if style {
+				fmt.Println(Blod(k))
+			} else {
+				fmt.Println(k)
+			}
+			for _, line := range v {
+				fmt.Printf("\t%s\n", line)
+			}
+		}
+	}
+
+}
+
+func (res youdaoResp) Print() {
+	res.print(true)
+}
+
+func (res youdaoResp) RawPrint() {
+	res.print(false)
 }
