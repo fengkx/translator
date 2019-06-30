@@ -68,6 +68,7 @@ HOST=%s
 
 [output]
 # only support black red green yellow blue magenta cyan white
+# raw=true # output to raw text without color
 LabelColor=%s
 TextColor=%s
 EgColor=%s

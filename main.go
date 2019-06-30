@@ -25,11 +25,13 @@ func main() {
 		tl      string
 		payload string
 		engine  string
+		raw bool
 	)
 
 	flag.StringVar(&sl, "s", "auto", "source language")
 	flag.StringVar(&engine, "e", "google", "engine")
 	flag.StringVar(&tl, "t", "", "target language")
+	flag.BoolVar(&raw, "raw", false, "raw output without color escape")
 	flag.Parse()
 
 	cfg := config.Cfg
@@ -74,5 +76,16 @@ func main() {
 		_, _ = fmt.Fprintf(os.Stderr, "%s\n", err)
 		return
 	}
-	result.Print()
+
+	if !raw {
+		r, err := cfg.Section("output").Key("raw").Bool()
+		if err == nil {
+			raw = r
+		}
+	}
+	if raw {
+		result.RawPrint()
+	} else {
+		result.Print()
+	}
 }

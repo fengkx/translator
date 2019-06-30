@@ -5,6 +5,8 @@
 Usage of tl:
   -e string
     	engine (default "google")
+  -raw
+    	raw output without color escape
   -s string
     	source language (default "auto")
   -t string
@@ -37,6 +39,7 @@ HOST=http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule
 
 [output]
 # only support black red green yellow blue magenta cyan white
+# raw=true # output to raw text without color
 LabelColor=green
 TextColor=white
 EgColor=yellow

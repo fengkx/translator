@@ -66,8 +66,12 @@ func (res *DefaultResp) print(style bool) {
 	}
 	if res.definitions != nil {
 		fmt.Println("--------------------------")
-		fmt.Println(
-			LabelStyle("Definitions"))
+		if style {
+			fmt.Println(
+				LabelStyle("Definitions"))
+		} else {
+			fmt.Println("Definitions")
+		}
 		for k, v := range res.definitions {
 			if style {
 				fmt.Printf("[%s]\n", POSStyle(k+"."))
@@ -82,7 +86,11 @@ func (res *DefaultResp) print(style bool) {
 	}
 	if res.alternatives != nil {
 		fmt.Println("--------------------------")
-		fmt.Println(LabelStyle("Alternatives"))
+		if style {
+			fmt.Println(LabelStyle("Alternatives"))
+		} else {
+			fmt.Println("Alternatives")
+		}
 
 		for k, v := range res.alternatives {
 			if style {
