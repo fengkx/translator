@@ -38,13 +38,13 @@ const filename = "go-translator.ini"
 
 var inipath = path.Join(ConfigPath(), filename)
 
-
 type Config struct {
 	*ini.File
 }
+
 var Cfg Config
 
-func (c Config)TextColor() chalk.Color  {
+func (c Config) TextColor() chalk.Color {
 	return ColorMap[c.Section("output").Key("TextColor").Value()]
 }
 

@@ -9,7 +9,7 @@ func TestConfigPath(t *testing.T) {
 	stringNoEmpty(t, cp, "Config path")
 }
 
-func stringNoEmpty(t *testing.T, s string, name... string) {
+func stringNoEmpty(t *testing.T, s string, name ...string) {
 	if len(s) < 0 {
 		if len(name) > 0 {
 			t.Fatalf("%s should not empty", name[0])

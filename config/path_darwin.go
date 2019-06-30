@@ -8,7 +8,7 @@ import (
 )
 
 func ConfigPath() string {
-		home, _ := os.UserHomeDir()
-		cfgpath := path.Join(home, "Library", "Preferences")
+	home, _ := os.UserHomeDir()
+	cfgpath := path.Join(home, "Library", "Preferences")
 	return cfgpath
 }

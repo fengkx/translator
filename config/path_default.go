@@ -10,7 +10,7 @@ import (
 
 func ConfigPath() string {
 	cfgpath := os.Getenv("XDG_CONFIG_HOME ")
-	if  cfgpath == "" {
+	if cfgpath == "" {
 		home, _ := os.UserHomeDir()
 		cfgpath = path.Join(home, ".config")
 	}
