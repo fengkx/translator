@@ -90,7 +90,7 @@ func init() {
 	_, e := os.Stat(inipath)
 	if os.IsNotExist(e) {
 		fd, err = os.Create(inipath)
-		var DefaultIni = fmt.Sprintf(tpl, DefaultGoogleAPI, DefaultCibaAPI, DefaultYoudaoAPI, DefaultLabelColor, DefaultTextColor, DefaultEgColor)
+		var DefaultIni = fmt.Sprintf(tpl, DefaultGoogleAPI, DefaultCibaAPI, DefaultYoudaoAPI, DefaultBaiduFanyiAPI, DefaultLabelColor, DefaultTextColor, DefaultEgColor)
 
 		_, err := io.WriteString(fd, DefaultIni)
 		err = fd.Close()

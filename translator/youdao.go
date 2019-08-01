@@ -51,7 +51,7 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 	ms = ms + rand.Int63n(10)
 
 	const strStart = "fanyideskweb"
-	const strEnd = "ebSeFb%=XZ%T[KZ)c(sy!"
+	const strEnd = "n%A-rKaT5fb[Gy?;N5@Tj"
 	salt := fmt.Sprintf("%d", ms)
 
 	h := md5.New()
@@ -95,6 +95,9 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 	result, parseErr := jq.QueryToString("translateResult.[0].[0].tgt")
 	source, parseErr := jq.QueryToString("translateResult.[0].[0].src")
 
+	if parseErr != nil {
+		return &youdaoResp{DefaultResp{err: errors.New(rawResult), req: r}}
+	}
 	// definiations
 	wordMeans, parseErr := jq.QueryToArray("smartResult.entries")
 
@@ -115,10 +118,6 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 				definitions[fmt.Sprintf("!HIDE!%x", &i)] = Defintions{NewDefintion(strings.TrimSpace(pair[0]))}
 			}
 		}
-	}
-
-	if parseErr != nil {
-		err = errors.New(rawResult)
 	}
 
 	return &youdaoResp{DefaultResp{
