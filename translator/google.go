@@ -1,9 +1,10 @@
 package translator
 
 import (
+	"strings"
+
 	"github.com/elgs/gojq"
 	"github.com/imroc/req"
-	"strings"
 
 	"github.com/fengkx/translator/config"
 )

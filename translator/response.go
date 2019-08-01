@@ -2,6 +2,7 @@ package translator
 
 import (
 	"fmt"
+
 	"github.com/fengkx/translator/config"
 	"github.com/ttacon/chalk"
 )

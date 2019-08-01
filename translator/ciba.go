@@ -1,10 +1,11 @@
 package translator
 
 import (
+	"regexp"
+
 	"github.com/elgs/gojq"
 	"github.com/fengkx/translator/config"
 	"github.com/imroc/req"
-	"regexp"
 )
 
 type CibaTranslator struct {
