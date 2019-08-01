@@ -11,7 +11,7 @@ Usage of tl:
     	source language (default "auto")
   -t string
     	target language
-Supported engines: google, ciba, youdao
+Supported engines: ciba, youdao, bdfanyi, google
 Config ini path: /home/fengkx/.config
 
 ```
@@ -20,6 +20,7 @@ Config ini path: /home/fengkx/.config
 | google  | Google翻译 | ajax接口 |
 | ciba    | 金山词霸     | ajax接口   |
 | youdao  | 有道翻译     | ajax接口 |
+| bdfanyi  | 百度翻译     | 商业接口 |
 
 通过[环境变量](https://golang.org/pkg/net/http/#ProxyFromEnvironment)`http_proxy` or `https_proxy`来代理请求
 
@@ -36,6 +37,11 @@ HOST=http://fy.iciba.com/ajax.php
 
 [youdao]
 HOST=http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule
+
+[bdfanyi]
+HOST=https://fanyi-api.baidu.com/api/trans/vip/translate
+APPID=XXXXXXXXX
+APPKEY=XXXXXXXXXX
 
 [output]
 # only support black red green yellow blue magenta cyan white
