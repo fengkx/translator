@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/fengkx/translator/config"
-	"github.com/fengkx/translator/translator"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/fengkx/translator/config"
+	"github.com/fengkx/translator/translator"
 )
 
 func main() {
@@ -18,6 +19,7 @@ func main() {
 		"google": translator.NewGoogleTranslator,
 		"ciba":   translator.NewCibaTranslator,
 		"youdao": translator.NewYoudaoTranslator,
+		"bdfanyi": translator.NewBaiduFanyiTranslator,
 	}
 
 	var (
@@ -25,7 +27,7 @@ func main() {
 		tl      string
 		payload string
 		engine  string
-		raw bool
+		raw     bool
 	)
 
 	flag.StringVar(&sl, "s", "auto", "source language")
@@ -67,7 +69,21 @@ func main() {
 		flag.Usage()
 		return
 	}
-	t := c(cfg.Section(engine).Key("HOST").Value())
+
+	var t translator.Translator
+
+	apihost := cfg.Section(engine).Key("HOST").Value()
+	appid := cfg.Section(engine).Key("APPID").Value()
+	appkey := cfg.Section(engine).Key("APPKEY").Value()
+	if apihost == "" {
+		t = c()
+	} else {
+		if appid == "" && appkey == "" {
+			t = c(apihost)
+		} else {
+			t = c(apihost, appid, appkey)
+		}
+	}
 	result := t.Translate(translator.NewReq(
 		payload,
 		sl,

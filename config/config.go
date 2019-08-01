@@ -2,18 +2,20 @@ package config
 
 import (
 	"fmt"
-	"github.com/go-ini/ini"
-	"github.com/ttacon/chalk"
 	"io"
 	"log"
 	"os"
 	"path"
+
+	"github.com/go-ini/ini"
+	"github.com/ttacon/chalk"
 )
 
 const (
 	DefaultGoogleAPI = "https://translate.googleapis.com/"
 	DefaultYoudaoAPI = "http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule"
 	DefaultCibaAPI   = "http://fy.iciba.com/ajax.php"
+	DefaultBaiduFanyiAPI = "https://fanyi-api.baidu.com/api/trans/vip/translate"
 )
 
 var ColorMap = map[string]chalk.Color{
@@ -65,6 +67,11 @@ HOST=%s
 
 [youdao]
 HOST=%s
+
+[bdfanyi]
+HOST=%s
+APPID=XXXXXXXXX
+APPKEY=XXXXXXXXXX
 
 [output]
 # only support black red green yellow blue magenta cyan white
