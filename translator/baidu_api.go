@@ -61,7 +61,7 @@ func NewBaiduFanyiTranslator(args ...string) Translator {
 		appkey = args[1]
 	}
 	return &BaiduFanyiTranslator{
-		"baidufanyi",
+		"bdfanyi",
 		host,
 		appid,
 		appkey,
