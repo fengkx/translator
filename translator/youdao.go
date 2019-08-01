@@ -2,6 +2,7 @@ package translator
 
 import (
 	"crypto/md5"
+	"errors"
 	"fmt"
 	"io"
 	"math/rand"
@@ -114,6 +115,10 @@ func (t *YoudaoTranslator) Translate(r Request) (res Respone) {
 				definitions[fmt.Sprintf("!HIDE!%x", &i)] = Defintions{NewDefintion(strings.TrimSpace(pair[0]))}
 			}
 		}
+	}
+
+	if parseErr != nil {
+		err = errors.New(rawResult)
 	}
 
 	return &youdaoResp{DefaultResp{
