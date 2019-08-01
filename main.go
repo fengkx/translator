@@ -60,7 +60,11 @@ func main() {
 		if re.Match([]byte(payload)) {
 			tl = "en"
 		} else {
-			tl = "zh-CN"
+			if engine == "bdfanyi" {
+				tl = "zh"
+			} else {
+				tl = "zh-CN"
+			}
 		}
 	}
 
